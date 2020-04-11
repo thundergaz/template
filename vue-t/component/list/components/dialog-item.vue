@@ -127,7 +127,7 @@ export default {
     },
     childVisible(val) {
       if (!val) {
-        this.$parent.modalVisible = val;
+        this.$parent.visible = val;
       }
     }
   },
