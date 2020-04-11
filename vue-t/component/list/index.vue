@@ -117,7 +117,7 @@ export default {
     },
     getPage() {
       const params = { ...this.reqData, ...this.searchData };
-      API_DemandChildInfo(params).then(res => {
+      __module_name__.list(params).then(res => {
         this.tableData = res.content;
         this.total = res.totalElements;
       });

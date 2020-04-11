@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-modal
-      title="新增问题--所属题库 xxx"
+      title="新增"
       v-model="childVisible"
       width="60%"
       @ok="handleOk"
@@ -97,7 +97,6 @@ function getBase64(file) {
   });
 }
 export default {
-  name: "dialog-item",
   data() {
     return {
       fileList: [],
