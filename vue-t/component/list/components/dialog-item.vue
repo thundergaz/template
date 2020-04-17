@@ -120,20 +120,13 @@ export default {
     };
   },
   props: ["show", "inputData"],
-  watch: {
-    show(val) {
-      this.childVisible = val;
-    },
-    childVisible(val) {
-      if (!val) {
-        this.$parent.visible = val;
-      }
-    }
-  },
   beforeCreate() {
     this.form = this.$form.createForm(this, { name: "question" });
   },
   methods: {
+    init(){
+      this.childVisible = true;
+    },
     setFeildValue(data) {
       this.$nextTick(() => {
         __module_name__.findOne(data.id).then(res => {
@@ -175,7 +168,6 @@ export default {
       this.fileList = fileList;
     },
     normalizeAll(value, prevValue = []) {
-      debugger;
       if (value === prevValue) {
         return value;
       }

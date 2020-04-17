@@ -7,9 +7,10 @@
     <!-- 表格 -->
     <a-table
       :columns="columns"
-      :dataSource="data"
-      :pagination="{ pageSize: 50 }"
+      :dataSource="tableData"
+      :pagination="false"
       :scroll="tableScroll"
+      :rowKey="(record, index) => index"
       size="small"
       bordered
     >
@@ -17,20 +18,18 @@
         <a slot="operation" slot-scope @click="handle(record.key)" href="javascript:;">操作</a>
       </template>
     </a-table>
-    <dialog-item :show="visible"></dialog-item>
+    <pagination :total='total'></pagination>
+    <dialog-item ref="child"></dialog-item>
   </div>
 </template>
 
 <script>
-import DialogItem from "./components/dialog-item.vue";
 import { tableScroll } from "@/shared/utils";
-import { __module_name__ } from "@/api/__module_cname__";
 import tableHead from "@/shared/search";
+import pagination from "@/shared/component/pagination";
+import DialogItem from "./components/dialog-item.vue";
 
-const formItemLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 }
-};
+import { __module_name__ } from "@/api/__module_cname__";
 const columns = [
   {
     title: "部门编号",
@@ -40,12 +39,14 @@ const columns = [
   {
     title: "部门名称",
     dataIndex: "name",
-    width: 150
+    width: 150,
+    isShow: true
   },
   {
     title: "部门全称",
     dataIndex: "allName",
-    width: 250
+    width: 250,
+    isShow: true
   },
   {
     title: "是否有效",
@@ -74,34 +75,14 @@ const columns = [
     scopedSlots: { customRender: "operation" }
   }
 ];
-
-const data = [];
-for (let i = 0; i < 100; i++) {
-  data.push({
-    key: i,
-    nameID: `farben ${i}`,
-    name: `流程与信息化`,
-    allName: `法本信息技术有限公司 ${i}`,
-    isUse: `是`,
-    cUser: `赵某某`,
-    cTime: `20200214`,
-    fUser: `罗大师`,
-    fTime: `20200215`
-  });
-}
 export default {
   data() {
     return {
-      reqData: {
-        limit: 10,
-        offset: 1
-      },
+      total: 0,
       tableScroll: tableScroll(columns),
       searchData: {},
-      data,
+      tableData,
       columns,
-      formItemLayout,
-      visible: false
     };
   },
   components: {
@@ -111,10 +92,12 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    // 使用新的搜索状态
     search(data) {
       this.searchData = data;
-      this.getPage()
+      this.getPage();
     },
+    // 保持当前搜索状态
     getPage() {
       const params = { ...this.reqData, ...this.searchData };
       __module_name__.list(params).then(res => {
@@ -124,7 +107,7 @@ export default {
     },
     handle(key) {},
     add() {
-      this.visible = true;
+      this.$refs.child.init()
     }
   }
 };
