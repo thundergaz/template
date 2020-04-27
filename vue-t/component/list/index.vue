@@ -109,7 +109,9 @@ export default {
     tableHead
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.getPage()
+  },
   methods: {
     // 使用新的搜索状态
     search(data) {
@@ -133,18 +135,18 @@ export default {
     add() {
       this.$refs.child.init();
     },
-    // 分页
-    onShowSizeChange(page, pagesize) {
-      this.offset = page;
-      this.limit = pagesize;
-      this.getPage();
-    },
     // 总条数改变
-    changePage(current, size) {
-      this.offset = current;
-      this.limit = size;
+    onShowSizeChange(page, pagesize) {
+      this.reqData.offset = page;
+      this.reqData.limit = pagesize;
       this.getPage();
     },
+    // 页码变更
+    changePage(current, size) {
+      this.reqData.offset = current;
+      this.reqData.limit = size;
+      this.getPage();
+    }
   }
 };
 </script>
