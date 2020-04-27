@@ -18,7 +18,22 @@
         <a slot="operation" slot-scope @click="handle(record.key)" href="javascript:;">操作</a>
       </template>
     </a-table>
-    <pagination :total='total'></pagination>
+    <div class="page">
+      <a-pagination
+        :showTotal="total => `共 ${total} 条`"
+        :total="total"
+        showSizeChanger
+        :pageSize="reqData.limit"
+        v-model="reqData.offset"
+        :pageSizeOptions="pageSizeOptions"
+        @showSizeChange="onShowSizeChange"
+        @change="changePage"
+      >
+        <template slot="buildOptionText" slot-scope="props">
+          <span>{{props.value}}条/页</span>
+        </template>
+      </a-pagination>
+    </div>
     <dialog-item ref="child"></dialog-item>
   </div>
 </template>
@@ -26,7 +41,6 @@
 <script>
 import { tableScroll } from "@/shared/utils";
 import tableHead from "@/shared/search";
-import pagination from "@/shared/component/pagination";
 import DialogItem from "./components/dialog-item.vue";
 
 import { __module_name__ } from "@/api/__module_cname__";
@@ -78,11 +92,16 @@ const columns = [
 export default {
   data() {
     return {
-      total: 0,
       tableScroll: tableScroll(columns),
+      pageSizeOptions: ["10", "20", "30", "40", "50"],
+      total: 0,
       searchData: {},
-      tableData,
-      columns,
+      reqData: {
+        limit: 10,
+        offset: 1
+      },
+      tableData: [],
+      columns
     };
   },
   components: {
@@ -95,6 +114,7 @@ export default {
     // 使用新的搜索状态
     search(data) {
       this.searchData = data;
+      this.reqData.offset = 1;
       this.getPage();
     },
     // 保持当前搜索状态
@@ -105,10 +125,26 @@ export default {
         this.total = res.totalElements;
       });
     },
-    handle(key) {},
+    // 点击列表操作的方法
+    handle(key) {
+      //
+    },
+    // 打开子窗口
     add() {
-      this.$refs.child.init()
-    }
+      this.$refs.child.init();
+    },
+    // 分页
+    onShowSizeChange(page, pagesize) {
+      this.offset = page;
+      this.limit = pagesize;
+      this.getPage();
+    },
+    // 总条数改变
+    changePage(current, size) {
+      this.offset = current;
+      this.limit = size;
+      this.getPage();
+    },
   }
 };
 </script>
@@ -116,5 +152,9 @@ export default {
 <style scoped>
 .search-item .search-btn {
   margin-right: 12px;
+}
+.page {
+  text-align: right;
+  margin-top: 12px;
 }
 </style>
