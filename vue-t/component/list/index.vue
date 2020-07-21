@@ -40,7 +40,7 @@
 
 <script>
 import { tableScroll } from "@/shared/utils";
-import tableHead from "@/shared/search";
+import tableHead from "@/shared/component/search";
 import DialogItem from "./components/dialog-item.vue";
 
 import { __module_name__ } from "@/api/__module_cname__";
